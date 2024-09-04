@@ -1,5 +1,5 @@
 [project]
-name = "rlenvs_guialba"
+name = "rlenvs"
 version = "0.0.1"
 authors = [
   { name="Guilherme Albarrans" },
