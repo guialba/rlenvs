@@ -1,8 +1,9 @@
 from setuptools import setup, find_packages
+import rlenvs
 
 setup(
     name='rlenvs',
-    version=0.1,
+    version=rlenvs.__version__,
 
     url='https://github.com/guialba/rlenvs',
     author='Guiulherme Albarrans Leite',
