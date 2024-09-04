@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 # from my_pip_package import __version__
 
 setup(
-    name='my_pip_package',
+    name='rlenvs',
     version='dev',
 
     url='https://github.com/guialba/rlenvs',
