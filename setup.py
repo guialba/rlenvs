@@ -9,6 +9,8 @@ setup(
     author='Guiulherme Albarrans Leite',
     install_requires=[
         'numpy',
+        'gymnasium',
+        'pygame',
     ],
     packages=find_packages()
 )
