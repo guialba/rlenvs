@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 setup(
     name='rlenvs',
     # version=rlenvs.__version__,
-    version=0.1,
+    version=0.2.,
     url='https://github.com/guialba/rlenvs',
     author='Guiulherme Albarrans Leite',
     install_requires=[
