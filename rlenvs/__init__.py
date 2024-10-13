@@ -15,16 +15,9 @@ register(
     reward_threshold=475.0,
 )
 
-register(
-    id='custom/DiscreteCartPole-v1',
-    entry_point='rlenvs.cart_pole_custom:DiscreteCartPoleEnv',
-    vector_entry_point="rlenvs.cart_pole_custom:DiscreteCartPoleEnvVectorEnv",
-    max_episode_steps=500,
-    reward_threshold=475.0,
-)
 
 register(
-    id='custom/DynamicDiscreteCartPole-v1',
+    id='custom/DiscreteCartPole-v1',
     entry_point='rlenvs.cart_pole_custom:CustomDiscreteCartPoleEnv',
     vector_entry_point="rlenvs.cart_pole_custom:CustomDiscreteCartPoleVectorEnv",
     max_episode_steps=500,
