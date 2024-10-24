@@ -1,11 +1,11 @@
-__version__ = 0.25
+__version__ = 0.251
 
 from rlenvs.river import *
 from rlenvs.hunting import *
 from rlenvs.texas_holdem_simp import *
 from rlenvs.cart_pole_custom import *
 
-from gymnasium.envs.registration import register
+from gymnasium import register
 
 register(
     id='custom/CartPole-v1',
