@@ -91,7 +91,8 @@ class CustomCartPoleVectorEnv(CartPoleVectorEnv):
 class DiscreteCartPole():
     def __init__(   self, 
                     # sizes = (1, 15, 15, 15),
-                    sizes = (1, 10, 10, 10),
+                    # sizes = (1, 10, 10, 10),
+                    simplify = True,
                     # limits = (0, 1.5, .21, 1.5),
                     # smooth_factor = (2, 2, 1, 1.5),
                     gravity = 9.8,
@@ -103,7 +104,7 @@ class DiscreteCartPole():
                     *args,
                     **keyArgs
                 ):
-        self.sizes = sizes
+        # self.sizes = sizes
         # self.limits = limits
         # self.smooth_factor = smooth_factor
         self.gravity = gravity
@@ -123,7 +124,8 @@ class DiscreteCartPole():
         #     for i, (size,limit) in enumerate(zip(sizes, limits))
         # ]
 
-        self.factor_spaces = [self.get_factor_limits(n,f) for f,n in enumerate(self.sizes)] 
+        # self.factor_spaces = [self.get_factor_limits(n,f) for f,n in enumerate(self.sizes)] 
+        self.factor_spaces = self.get_factor_limits()
         self.enumerated_state = None
 
     def apply_step(self, state, action=1):    
@@ -151,18 +153,46 @@ class DiscreteCartPole():
 
         return np.array((x, x_dot, theta, theta_dot), dtype=np.float32)
 
-    def get_factor_limits(self, n, f):
-        s = [0,0,0,0]
-        limits = []
-        j = ((n-1) if n%2==0 else (n+1))//2
-        for _ in range(j):
-            s = self.apply_step(s)
-            v = round(float(s[f]), 5)
-            if v not in limits and n>1 and v!=0:
-                limits.append(v)
-        space = ([float(i*-1) for i in limits[::-1]]) + ([0] if n%2==0 else [])  + limits
-        return space if len(space) == 0 else (space if space[-1]>space[0] else space[::-1])
+    # def get_factor_limits(self, n, f):
+    #     s = [0,0,0,0]
+    #     limits = []
+    #     j = ((n-1) if n%2==0 else (n+1))//2
+    #     for _ in range(j):
+    #         s = self.apply_step(s)
+    #         v = round(float(s[f]), 5)
+    #         if v not in limits and n>1 and v!=0:
+    #             limits.append(v)
+    #     space = ([float(i*-1) for i in limits[::-1]]) + ([0] if n%2==0 else [])  + limits
+    #     return space if len(space) == 0 else (space if space[-1]>space[0] else space[::-1])
 
+    def get_factor_limits(self, simplify=True):
+        # end_conditions = {0:[2.4], 2: [0.21]}
+        def factor(f, l, variate):
+            s = [0,0,0,0]
+            counter = 0
+            a = 1
+            v_dot = set()
+            v = set()
+            for counter in range(100):
+                if s[f]<-l or s[f]>l:
+                    break
+                v_dot.add(round(float(s[f+1]), 5))
+                v.add(round(float(s[f]), 5))
+                counter+=1
+                a = int( variate(counter))
+                s = self.apply_step(s, a)
+
+            v_dot.update({i*-1 for i in v_dot})
+            v.update({i*-1 for i in v})
+            v_dot = sorted(v_dot)
+            v = [-l] + sorted(v) + [l]
+            return v, v_dot
+        theta, theta_dot = factor(f=2, l=.21, variate=lambda x: x%2==0)
+        if not simplify:
+            x, x_dot = factor(f=0, l=2.4, variate=lambda x: [0, 0, 1][x%3])
+            return [x, x_dot, theta, theta_dot]
+        else:
+            return [[0], [0], theta, theta_dot]
 
     def __locate_in_space__(self, factor, value):
         value = round(float(value), 5)
@@ -186,12 +216,14 @@ class DiscreteCartPole():
 
     def enumerate_state(self, state):
         factored_state, _ = self.discretize(state)
-        s = np.meshgrid(*[np.arange(f+1) for f in self.sizes])
+        # s = np.meshgrid(*[np.arange(f+1) for f in self.sizes])
+        s = np.meshgrid(*[np.arange(len(f)) for f in self.factor_spaces])
         grid = np.vstack([si.ravel() for si in s])
         return int(np.argwhere([p==factored_state for p in zip(*grid)])[0][0])
 
     def factor_state(self, enum_state):
-        s = np.meshgrid(*[np.arange(f+1) for f in self.sizes])
+        # s = np.meshgrid(*[np.arange(f+1) for f in self.sizes])
+        s = np.meshgrid(*[np.arange(len(f)) for f in self.factor_spaces])
         grid = np.vstack([si.ravel() for si in s])
         factored_state = tuple(int(i) for i in grid[:,enum_state])
         return [space[i] for i, space in zip(factored_state, self.factor_spaces)]
