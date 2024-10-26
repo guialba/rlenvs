@@ -1,10 +1,10 @@
 from setuptools import setup, find_packages
-# import rlenvs
+import rlenvs
 
 setup(
     name='rlenvs',
-    # version=rlenvs.__version__,
-    version=0.3,
+    version=rlenvs.__version__,
+    version=0.31,
     url='https://github.com/guialba/rlenvs',
     author='Guiulherme Albarrans Leite',
     install_requires=[
