@@ -90,11 +90,7 @@ class CustomCartPoleVectorEnv(CartPoleVectorEnv):
 
 class DiscreteCartPole():
     def __init__(   self, 
-                    # sizes = (1, 15, 15, 15),
-                    # sizes = (1, 10, 10, 10),
                     simplify = True,
-                    # limits = (0, 1.5, .21, 1.5),
-                    # smooth_factor = (2, 2, 1, 1.5),
                     gravity = 9.8,
                     masscart = 1.0,
                     masspole = 0.1,
@@ -104,9 +100,7 @@ class DiscreteCartPole():
                     *args,
                     **keyArgs
                 ):
-        # self.sizes = sizes
-        # self.limits = limits
-        # self.smooth_factor = smooth_factor
+        self.simplify = simplify
         self.gravity = gravity
         self.masscart = masscart
         self.masspole = masspole
@@ -114,18 +108,7 @@ class DiscreteCartPole():
         self.force_mag = force_mag
         self.tau = tau
 
-        # self.factor_spaces = [
-        #     # np.concatenate([-np.linspace(0, limit**.5, ((size+1)//2))[::-1]**2, np.linspace(0, limit**.5, ((size+1)//2))[1:]**2])
-        #     np.concatenate([
-        #         -np.linspace(0, limit**(1/smooth_factor[i]), ((size+1)//2))[::-1]**smooth_factor[i], 
-        #         np.linspace(0, limit**(1/smooth_factor[i]), ((size+1)//2))[1:]**smooth_factor[i]
-        #     ])
-        #     # np.linspace(0, (limit[1]*2)**.5, size-1)**2 + limit[0] 
-        #     for i, (size,limit) in enumerate(zip(sizes, limits))
-        # ]
-
-        # self.factor_spaces = [self.get_factor_limits(n,f) for f,n in enumerate(self.sizes)] 
-        self.factor_spaces = self.get_factor_limits()
+        self.factor_spaces = self.get_factor_limits(self.simplify)
         self.enumerated_state = None
 
     def apply_step(self, state, action=1):    
@@ -153,20 +136,7 @@ class DiscreteCartPole():
 
         return np.array((x, x_dot, theta, theta_dot), dtype=np.float32)
 
-    # def get_factor_limits(self, n, f):
-    #     s = [0,0,0,0]
-    #     limits = []
-    #     j = ((n-1) if n%2==0 else (n+1))//2
-    #     for _ in range(j):
-    #         s = self.apply_step(s)
-    #         v = round(float(s[f]), 5)
-    #         if v not in limits and n>1 and v!=0:
-    #             limits.append(v)
-    #     space = ([float(i*-1) for i in limits[::-1]]) + ([0] if n%2==0 else [])  + limits
-    #     return space if len(space) == 0 else (space if space[-1]>space[0] else space[::-1])
-
     def get_factor_limits(self, simplify=True):
-        # end_conditions = {0:[2.4], 2: [0.21]}
         def factor(f, l, variate):
             s = [0,0,0,0]
             counter = 0

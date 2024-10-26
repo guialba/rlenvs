@@ -8,7 +8,7 @@ n=500
 env = gym.make("custom/DiscreteCartPole-v1", render_mode="human")
 
 # observation, info = env.reset(seed=82, masspole=.45, length=1.0)
-observation, info = env.reset(seed=82, options={'masspole':.45, 'length':1.0, "sizes":(1, 20, 20, 20)})
+observation, info = env.reset(seed=82, options={'masspole':.45, 'length':1.0})
 hist_s = [observation]
 hist_a = []
 for _ in range(n):
