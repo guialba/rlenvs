@@ -1,4 +1,4 @@
-__version__ = 0.251
+__version__ = 0.3
 
 from rlenvs.river import *
 from rlenvs.hunting import *
