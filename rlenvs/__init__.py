@@ -1,4 +1,4 @@
-__version__ = 0.31
+__version__ = 0.32
 
 try:
     from rlenvs.river import *
