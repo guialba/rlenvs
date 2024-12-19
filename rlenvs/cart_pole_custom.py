@@ -214,14 +214,14 @@ class CustomDiscreteCartPoleEnv(CustomCartPoleEnv):
 
         _, values = self.discretizer.discretize(observation)
         self.enumerated_state = self.discretizer.enumerate_state(observation)
-        self.state = np.array(values, dtype=np.float64)
+        self.state = np.array([i if i!=np.inf else 999 for i in values], dtype=np.float64)
         return np.array(values, dtype=np.float32), info
     
     def step(self, *args, **keyArgs):
         observation, reward, terminated, truncated, info = super().step(*args, **keyArgs)
         _, values = self.discretizer.discretize(observation)
         self.enumerated_state = self.discretizer.enumerate_state(observation)
-        self.state = np.array(values, dtype=np.float64)
+        self.state = np.array([i if i!=np.inf else 999 for i in values], dtype=np.float64)
         return  np.array(values, dtype=np.float32), reward, terminated, truncated, info
 
 # class CustomDiscreteCartPoleVectorEnv(CustomCartPoleVectorEnv, DiscreteCartPole):
@@ -236,14 +236,14 @@ class CustomDiscreteCartPoleVectorEnv(CustomCartPoleVectorEnv):
         observation, info = super().reset(*args, **keyArgs)
         _, values = self.discretizer.discretize(observation)
         self.enumerated_state = self.discretizer.enumerate_state(observation)
-        self.state = np.array(values, dtype=np.float64)
+        self.state = np.array([i if i!=np.inf else 999 for i in values], dtype=np.float64)
         return np.array(values, dtype=np.float32), info
     
     def step(self, *args, **keyArgs):
         observation, reward, terminated, truncated, info = super().step(*args, **keyArgs)
         _, values = self.discretizer.discretize(observation)
         self.enumerated_state = self.discretizer.enumerate_state(observation)
-        self.state = np.array(values, dtype=np.float64)
+        self.state = np.array([i if i!=np.inf else 999 for i in values], dtype=np.float64)
         return np.array(values, dtype=np.float32), reward, terminated, truncated, info
 
 
