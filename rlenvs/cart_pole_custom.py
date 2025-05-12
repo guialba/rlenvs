@@ -1,6 +1,7 @@
 import numpy as np
 import gymnasium as gym
 from gymnasium.envs.classic_control.cartpole import CartPoleEnv, CartPoleVectorEnv
+from typing import Optional, Tuple, Union
 
 class CustomCartPoleEnv(CartPoleEnv):
     def __init__(   self, 
@@ -38,11 +39,12 @@ class CustomCartPoleEnv(CartPoleEnv):
     #     return ret
     
     def reset( self, 
-                *args,
-                **keyArgs
+                *,
+                seed: Optional[int] = None,
+                options: Optional[dict] = None
             ):
-        ret = super().reset(*args, **keyArgs)
-        options =  keyArgs.get('options')
+        ret = super().reset(seed=seed)
+        # options =  keyArgs.get('options')
         if options:
             self.gravity = options.get('gravity') or self.gravity
             self.masscart = options.get('masscart') or self.masscart
