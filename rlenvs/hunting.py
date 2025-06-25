@@ -17,8 +17,10 @@ class Hunting:
     
     def reset(self):
         self.c = np.random.randint(0,4)
-        self.pray = np.random.randint(0,self.width) + (self.height-5)*self.width
-        self.agent = self.width//2 + 4*self.width
+        # self.pray = np.random.randint(0,self.width) + (self.height-5)*self.width
+        self.pray = np.random.randint(0,self.width)
+        # self.agent = self.width//2 + 4*self.width
+        self.agent = self.height * self.width - self.width//2
         self.r = -1
         self.s = self.compose_state(self.agent, self.pray)
 
